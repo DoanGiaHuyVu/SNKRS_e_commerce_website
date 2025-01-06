@@ -21,7 +21,6 @@ db = SQLAlchemy(app)
 # Load Stripe API keys from environment variables
 # stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
 stripe.api_key = os.environ.get("STRIPE_PRIVATE_API_KEY")
-# 'sk_test_51QXC2BDnG13PNcpKutHjiPXMUQI6CRN20qNKyYYcnbCfI63c2x1Caf9B2OMl7Nifpmzy7U7gLVqqgRUUXELWgTrq00HRexWikM'
 
 
 class Shoes(db.Model):
