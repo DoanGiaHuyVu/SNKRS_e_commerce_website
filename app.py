@@ -7,7 +7,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import json
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+app.config['SECRET_KEY'] = os.environ.get('FLASK_KEY')
 
 
 class Base(DeclarativeBase):
@@ -20,7 +20,8 @@ db = SQLAlchemy(app)
 
 # Load Stripe API keys from environment variables
 # stripe.api_key = os.getenv('STRIPE_SECRET_KEY')
-stripe.api_key = 'sk_test_51QXC2BDnG13PNcpKutHjiPXMUQI6CRN20qNKyYYcnbCfI63c2x1Caf9B2OMl7Nifpmzy7U7gLVqqgRUUXELWgTrq00HRexWikM'
+stripe.api_key = os.environ.get("STRIPE_PRIVATE_API_KEY")
+# 'sk_test_51QXC2BDnG13PNcpKutHjiPXMUQI6CRN20qNKyYYcnbCfI63c2x1Caf9B2OMl7Nifpmzy7U7gLVqqgRUUXELWgTrq00HRexWikM'
 
 
 class Shoes(db.Model):
@@ -38,8 +39,7 @@ def home():
     PRODUCTS = db.session.execute(db.select(Shoes).order_by(Shoes.product_price))
     products = PRODUCTS.scalars().all()
     return render_template('index.html', products=products,
-                           stripe_public_key='pk_test_51QXC2BDnG13PNcpKvUS6B6ELK8rsnwArbYSFDXVgdJ6QZdr2fk5efUi98QgyaHxzqpO48zl30mRLVH8JWIGrffXW0037tNj2M4')
-
+                           stripe_public_key=os.environ.get('STRIPE_PUBLIC_KEY'))
 
 @app.route('/shoes/<string:gender>')
 def shoes_by_gender(gender):
@@ -52,7 +52,7 @@ def shoes_by_gender(gender):
 
         # Render the template with the filtered products
     return render_template('index.html', products=products,
-                           stripe_public_key='pk_test_51QXC2BDnG13PNcpKvUS6B6ELK8rsnwArbYSFDXVgdJ6QZdr2fk5efUi98QgyaHxzqpO48zl30mRLVH8JWIGrffXW0037tNj2M4')
+                           stripe_public_key=os.environ.get('STRIPE_PUBLIC_KEY'))
 
 
 @app.route('/product/<int:product_id>')
@@ -68,7 +68,7 @@ def show_product(product_id):
                            product_first_image_link=requested_product_data['first_image_link'],
                            product_video_link=requested_product_data['video_link'],
                            product_other_media=requested_product_data['other_media'],
-                           stripe_public_key='pk_test_51QXC2BDnG13PNcpKvUS6B6ELK8rsnwArbYSFDXVgdJ6QZdr2fk5efUi98QgyaHxzqpO48zl30mRLVH8JWIGrffXW0037tNj2M4')
+                           stripe_public_key=os.environ.get('STRIPE_PUBLIC_KEY'))
 
 
 @app.route('/add_to_cart/<int:product_id>', methods=['POST'])
@@ -105,7 +105,7 @@ def show_cart():
 
     # Render the cart page with the list of items in the cart
     return render_template('cart.html', cart=cart,
-                           stripe_public_key='pk_test_51QXC2BDnG13PNcpKvUS6B6ELK8rsnwArbYSFDXVgdJ6QZdr2fk5efUi98QgyaHxzqpO48zl30mRLVH8JWIGrffXW0037tNj2M4')
+                           stripe_public_key=os.environ.get('STRIPE_PUBLIC_KEY'))
 
 
 @app.route('/clear_cart')
