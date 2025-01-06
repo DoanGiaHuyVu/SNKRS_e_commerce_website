@@ -1,0 +1,77 @@
+<header>
+  <header class="header">
+      <div class="header-logo">SNKRS</div>
+      <nav class="nav-menu">
+        <a href="/">All</a>
+        <a href="{{ url_for('shoes_by_gender', gender='M') }}">Men</a>
+        <a href="{{ url_for('shoes_by_gender', gender='F') }}">Women</a>
+      </nav>
+      <div class="header-icons">
+        <a href="{{ url_for('show_cart') }}">Cart</a>
+      </div>
+    </header>
+</header>
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+     @font-face {
+        font-family: "Monument Extended";
+        src: url("/static/font/PPMonumentExtended-Regular.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "Monument Extended Bold";
+        src: url("/static/font/PPMonumentExtended-Black.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        font-family: "Monument Extended", sans-serif !important;
+        background-color: #fff;
+        color: #000;
+      }
+
+      /* Header styles */
+      .header {
+        background-color: #000;
+        color: #fff;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header-logo {
+        font-size: 28px;
+        font-weight: bold;
+        color: #e5f33c;
+      }
+
+      .nav-menu {
+        display: flex;
+        gap: 20px;
+      }
+
+      .nav-menu a {
+        color: #fff;
+        text-decoration: none;
+        font-size: 16px;
+      }
+
+      .nav-menu a:hover {
+        color: #e5f33c;
+      }
+
+      .header-icons {
+        display: flex;
+        gap: 15px;
+        font-size: 16px;
+      }
+</style>

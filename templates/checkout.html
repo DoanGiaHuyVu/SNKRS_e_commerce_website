@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout</title>
+    <!-- Include Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+</head>
+<body>
+    <h1>Complete Your Purchase</h1>
+    <p>Redirecting you to the payment page...</p>
+
+    <script type="text/javascript">
+        // Replace with your Stripe public key
+        var stripe = Stripe('{{ stripe_public_key }}');
+
+        // Create a Checkout session on the server-side
+        fetch("/create-checkout-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+        .then(function(response) {
+            return response.json();
+        })
+        .then(function(session) {
+            // Redirect to Stripe Checkout
+            return stripe.redirectToCheckout({ sessionId: session.id });
+        })
+        .then(function(result) {
+            // If redirect fails, show error
+            if (result.error) {
+                alert(result.error.message);
+            }
+        })
+        .catch(function(error) {
+            console.error("Error:", error);
+        });
+    </script>
+</body>
+</html>
+
+

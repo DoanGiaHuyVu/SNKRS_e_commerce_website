@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sneaker Head E-commerce Store</title>
+    <style>
+        * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @font-face {
+        font-family: "Monument Extended";
+        src: url("/static/font/PPMonumentExtended-Regular.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "Monument Extended Bold";
+        src: url("/static/font/PPMonumentExtended-Black.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        font-family: "Monument Extended", sans-serif;
+        background-color: #fff;
+        color: #000;
+      }
+
+      /* Main Banner */
+      .banner {
+        text-align: center;
+        padding: 50px;
+        position: relative;
+      }
+
+      .banner h1 {
+        font-size: 48px;
+        font-weight: bold;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .banner h1 img {
+        width: 60px;
+        height: auto;
+        border-radius: 50%;
+      }
+
+      .banner p {
+        font-size: 18px;
+        max-width: 800px;
+        margin: 0 auto;
+        color: #555;
+      }
+
+      .banner-logos {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 30px 0;
+      }
+
+      .banner-logos img {
+        width: 100px;
+        height: auto;
+      }
+
+      /* Diagonal banner */
+      .diagonal-banner {
+        background-color: #e5f33c;
+        color: black;
+        font-size: 24px;
+        text-transform: uppercase;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-around;
+        position: relative;
+        transform: rotate(-5deg);
+      }
+
+      .diagonal-banner-reverse {
+        background-color: black;
+        color: #e5f33c;
+        font-size: 24px;
+        text-transform: uppercase;
+        padding: 10px 0;
+        display: flex;
+        justify-content: space-around;
+        position: relative;
+        transform: rotate(5deg);
+      }
+
+      .diagonal-banner span {
+        font-weight: bold;
+        padding: 0 15px;
+      }
+
+      .product-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .product-card {
+        background-color: white;
+        padding: 20px;
+        text-align: left;
+      }
+
+      .product-card img {
+        width: 100%;
+        height: auto;
+      }
+
+      .product-card h3 {
+        margin: 15px 0;
+        font-size: 14px;
+      }
+
+      .product-card p {
+        color: #666;
+      }
+
+      .product-card .price {
+        font-weight: bold;
+        font-size: 12px;
+        margin-top: 10px;
+      }
+
+      a {
+          text-decoration: none;
+          color: inherit;
+      }
+      a:visited {
+          text-decoration: none;
+          color: inherit; /* Keeps the color the same after the link is clicked */
+      }
+      a:hover {
+          color: darkgray;
+      }
+
+
+        footer {
+            background-color: #111;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+            border-top: 2px solid #fff;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        /* Responsive Styling */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 30px;
+            }
+
+            .product h2 {
+                font-size: 22px;
+            }
+
+            .product p {
+                font-size: 18px;
+            }
+
+            .product button {
+                padding: 14px 26px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    {% include 'header.html' %}
+
+    <section class="banner">
+      <h1>
+        <img src="https://via.placeholder.com/60" alt="Shoe" /> Not Just For
+        Street Anymore <img src="https://via.placeholder.com/60" alt="Shoe" />
+      </h1>
+      <p>
+        Sneakers have forever been one of the statement pieces in a person’s
+        wardrobe. The sneaker game has been revolutionized with the entry of
+        flagship sneakers. They have become a fashion accessory for a lot of
+        people and have grown from being single-faceted to multi-faceted.
+      </p>
+      <div class="banner-logos">
+        <img src="https://via.placeholder.com/100" width="100" height="100" alt="Nike" />
+        <img src="https://via.placeholder.com/100" alt="Adidas" />
+        <img src="https://via.placeholder.com/100" alt="Vans" />
+        <img src="https://via.placeholder.com/100" alt="New Balance" />
+      </div>
+    </section>
+
+    <section class="diagonal-banner-reverse">
+      <span>Air Jordan</span>
+      <span>Dunks</span>
+      <span>Vans</span>
+      <span>Yeezy</span>
+      <span>Originals</span>
+    </section>
+
+    <section class="diagonal-banner">
+      <span>Air Jordan</span>
+      <span>Dunks</span>
+      <span>Vans</span>
+      <span>Yeezy</span>
+      <span>Originals</span>
+    </section>
+
+    <div class="product-grid">
+        {% for product in products %}
+        <div class="product-card">
+            <a href="{{ url_for('show_product', product_id=product.id) }}">
+                <img src="{{ product.first_image_link }}" alt="{{ product.product_name }}"/>
+                <h3>{{ product.product_name }}</h3>
+            </a>
+            <p>Price: {{ product.product_price }}</p>
+<!--            <button>Add to Cart</button>-->
+        </div>
+        {% endfor %}
+    </div>
+
+    {% include 'footer.html' %}
+</body>
+</html>

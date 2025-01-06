@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ product.product_name }}</title>
+        <!-- Include Stripe.js -->
+    <script src="https://js.stripe.com/v3/"></script>
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @font-face {
+        font-family: "Monument Extended";
+        src: url("/static/font/PPMonumentExtended-Regular.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      @font-face {
+        font-family: "Monument Extended Bold";
+        src: url("/static/font/PPMonumentExtended-Black.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        font-family: "Monument Extended", sans-serif !important;
+        background-color: #fff;
+        color: #000;
+      }
+
+      .container {
+          display: flex;
+          justify-content: space-between;
+          align-items: stretch;
+          margin: 100px auto;
+          max-width: 1200px;
+          height: 600px;
+          gap: 20px; /* Ensure 20px space between elements */
+          /*margin-right: 80px;*/
+        }
+
+        .thumbnail-gallery {
+          width: 6%;
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          overflow-y: auto;
+            /*margin-right: -150px;*/
+        }
+
+        .thumbnail-gallery img,
+        .thumbnail-gallery video {
+          width: 100%;
+          height: auto;
+          aspect-ratio: 1 / 1;
+          object-fit: cover;
+          cursor: pointer;
+          border-radius: 10px;
+        }
+
+        .main-media {
+          width: 55%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100%;
+            /*margin-right: -300px;*/
+        }
+
+        .product-info {
+          width: 34%; /* Reduced width to balance space */
+          height: 100%;
+            /*margin-right: 160px;*/
+        }
+
+        .main-media img,
+        .main-media video {
+          max-width: 100%;
+          max-height: 100%;
+          border-radius: 8px;
+          object-fit: contain;
+        }
+
+        .main-media video {
+          display: none;
+        }
+
+        .product-info h1 {
+          font-size: 28px;
+          margin-bottom: 10px;
+            padding-left: 8px;
+        }
+
+        .product-price {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+            padding-left: 8px;
+        }
+
+        .product-price del {
+          color: #777;
+          font-size: 18px;
+            padding-left: 8px;
+        }
+
+        .product-price span {
+          color: green;
+          font-weight: bold;
+          font-size: 24px;
+            padding-left: 8px;
+        }
+
+        .size-options {
+          margin-top: 20px;
+            /*padding-left: 8px;*/
+        }
+
+        .size-options button {
+          border: 1px solid #ddd;
+          background-color: white;
+          padding: 10px;
+          cursor: pointer;
+          margin: 5px;
+          font-size: 12px;
+        }
+
+        .size-options button:hover {
+          border-color: #000;
+        }
+
+        .add-to-cart {
+          margin-top: 30px;
+        }
+
+        .buy-now button {
+          width: 100%;
+          margin-top: 10px;
+          background-color: black;
+          color: white;
+          border: none;
+          padding: 15px;
+          font-size: 18px;
+          cursor: pointer;
+        }
+
+        .buy-now button:hover {
+          background-color: #333;
+        }
+
+        .add-to-cart.white-button button {
+          width: 100%;
+          margin-top: -20px;
+          padding: 15px;
+          font-size: 18px;
+          cursor: pointer;
+          background-color: white;
+          color: black;
+          border: 1px solid black;
+        }
+
+        .add-to-cart.white-button button:hover {
+          background-color: #f0f0f0;
+        }
+
+        .disclaimer {
+          margin-top: 10px;
+          color: #888;
+          font-size: 14px;
+        }
+
+    </style>
+  </head>
+  <body>
+      {% include 'header.html' %}
+        <div class="container">
+          <div class="thumbnail-gallery">
+            <!-- Thumbnail images -->
+            <img
+              src= "{{ product_first_image_link }}"
+              alt="Shoes"
+              onmouseover="updateMainMedia('{{ product_first_image_link }}', 'image')"
+              onclick="updateMainMedia('{{ product_first_image_link }}', 'image')"
+            />
+            {% if product_video_link != "Video element not found"%}
+              <video
+                muted
+                onclick="updateMainMedia('{{ product_video_link }}', 'video')"
+                onmouseover="updateMainMedia('{{ product_video_link }}', 'video')"
+              >
+                <source
+                  src="{{ product_video_link }}"
+                  type="video/mp4"
+                />
+              </video>
+            {% endif %}
+
+            {% for other_media in product_other_media%}
+              <img
+              src= "{{ other_media }}"
+              alt="Shoes"
+              onmouseover="updateMainMedia('{{ other_media }}', 'image')"
+              onclick="updateMainMedia('{{ other_media }}', 'image')"
+            />
+            {% endfor%}
+
+          </div>
+
+          <div class="main-media">
+            <!-- Main image or video display -->
+            <img
+              id="main-image"
+              src="{{ product_first_image_link }}"
+              alt="Main Image"
+            />
+            <video muted loop id="main-video" controls style="display: none">
+              <source
+                src="{{ product_video_link }}"
+                type="video/mp4"
+              />
+            </video>
+          </div>
+
+          <div class="product-info">
+            <h1>{{ product.product_name}}</h1>
+            <p style="padding-left: 8px;">{{ product.product_subtitle}}</p>
+            <div class="product-price">
+              <p>{{ product.product_price}}</p>
+            </div>
+            <div class="size-options">
+              <h3 style="padding-left: 8px;">Select Size</h3>
+              <div class="row row-cols-4 g-3">
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 5.5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 6</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 6.5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 7</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 7.5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 8</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 8.5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 9</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 9.5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 10</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 10.5</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 11</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 12</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 13</button>
+                  </div>
+                  <div class="col">
+                    <button class="btn btn-outline-secondary w-100">US 14</button>
+                  </div>
+                </div>
+            </div>
+            <div class="buy-now" style="padding-left: 8px;">
+              <button id="checkout-button-{{ product.id }}" data-product-id="{{ product.id }}" class="btn btn-primary">Buy Now</button>
+            </div>
+            <div class="add-to-cart white-button" style="padding-left: 8px;">
+              <form action="{{ url_for('add_to_cart', product_id=product.id) }}" method="post">
+                  <button type="submit" class="btn btn-primary">Add to Cart</button>
+              </form>
+            </div>
+            <div class="disclaimer" style="padding-left: 8px;">
+              <p>This product is excluded from site promotions and discounts.</p>
+            </div>
+          </div>
+        </div>
+        {% include 'footer.html' %}
+
+        <script>
+          function updateMainMedia(source, type) {
+            var mainImage = document.getElementById("main-image");
+            var mainVideo = document.getElementById("main-video");
+
+            if (type === "image") {
+              mainImage.src = source;
+              mainImage.style.display = "block";
+              mainVideo.style.display = "none";
+            } else if (type === "video") {
+              mainVideo.src = source;
+              mainImage.style.display = "none";
+              mainVideo.style.display = "block";
+              mainVideo.play();
+            }
+          }
+
+          // Initialize Stripe.js with the public key
+            const stripe = Stripe('{{ stripe_public_key }}');
+
+            // Attach event listeners to each Buy Now button
+            document.querySelectorAll('button').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const productId = button.dataset.productId;
+
+                    // POST request to create a checkout session
+                    const response = await fetch('/checkout', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ productId: productId })
+                    });
+
+                    // Parse response to get the session ID
+                    const data = await response.json();
+
+                    if (data.id) {
+                        // Redirect to Stripe Checkout
+                        stripe.redirectToCheckout({ sessionId: data.id });
+                    } else {
+                        // Handle errors (display an alert or log it)
+                        console.error('Error creating checkout session:', data.error);
+                    }
+                });
+            });
+        </script>
+  </body>
+</html>
